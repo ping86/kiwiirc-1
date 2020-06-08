@@ -70,9 +70,10 @@
 
         var themes = [{ "name": "Estandar", "url": "static/themes/chateagratis" }, { "name": "Avanzado", "url": "static/themes/default" }, { "name": "chateagratis", "url": "static/themes/chateagratis" }];
         var defaultTheme = "Estandar";
-        var serverList = ["platano", "melocoton", "lima"];
+        var serverList = ["lima", "platano", "melocoton"];
         var server = serverList[Math.floor(Math.random()*serverList.length)];
-        var endpoint = "https://"+server+".chateagratis.net/webirc/kiwiirc/";
+        var serverEndpoint = "https://"+server+".chateagratis.net";
+        var endpoint = serverEndpoint + "/webirc/kiwiirc/";
 
         var options = parseParms(window.location.hash.replace("#","")) || {};
         if(typeof options.channel !== 'undefined') {
@@ -84,6 +85,8 @@
 
           options.channel = channels.join(",");
         }
+
+        options.serverEndpoint = serverEndpoint;
 
         if(typeof options.theme_location !== 'undefined') {
           themes = [{ "name": "Estandar", "url": options.theme_location+"static/themes/chateagratis" }, { "name": "Avanzado", "url": options.theme_location + "static/themes/default" }, { "name": "chateagratis", "url": options.theme_location +"static/themes/chateagratis" }];
@@ -194,5 +197,8 @@
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
 </script>
+
+<script src="https://www.google.com/recaptcha/api.js?render=6Lf58AAVAAAAAIyn7W5RjjAK9qr6t4k8S7U9m9iZ"></script>
+
 </body>
 </html>

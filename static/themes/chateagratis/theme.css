@@ -88,7 +88,10 @@
 .irc-bg-colour-light-grey { background-color: #e2e2e2; }
 .kiwi-statebrowser-usermenu-network {display: none}
 
-
+/*
+ * custom
+ */
+.grecaptcha-badge {display: none !important;}
 
 /*
  * Theme: ChatZona

@@ -90,4 +90,24 @@ kiwi.plugin('firebase', function(kiwi) {
          }, 5000);
     });
 
+    kiwi.on('irc.notice', function(event) {
+        if(event.from_server) {
+          var token = event.message.split(" ");
+          if(token[0] == "VERIFICATION") {
+            var uuid = token[1];
+            grecaptcha.ready(function() {
+              grecaptcha.execute('6Lf58AAVAAAAAIyn7W5RjjAK9qr6t4k8S7U9m9iZ', {action: 'verfication_token'}).then(function(gtoken) {
+                  var xmlHttp = new XMLHttpRequest();
+                  var uri = kiwi.state.settings.chatea_options.serverEndpoint + ":8443/api/public/verification?token=" + gtoken+'&uuid='+uuid;
+                  console.log(uri);
+                  xmlHttp.open( "GET", uri, false ); // false for synchronous request
+                  xmlHttp.send( null );
+                  var verificationToken =  JSON.parse(xmlHttp.responseText);
+
+                  kiwi.state.$emit('input.raw', '/VERIFICATION ' +  verificationToken.response);
+              });
+            });
+          }
+        }
+    });
 });
