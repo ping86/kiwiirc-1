@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="icon" type="image/png" href="static/favicon.png">
-    <title>Kiwi IRC</title>
+    <title>Chat</title>
     <style>
     /* target specific styles */
     body {
@@ -22,6 +22,145 @@
             display:none;
         }
     </style>
+    <script>
+    function parseParms(str) {
+        var pieces = str.split("&"), data = {}, i, parts;
+        // process each query pair
+        for (i = 0; i < pieces.length; i++) {
+            parts = pieces[i].split("=");
+            if (parts.length < 2) {
+                parts.push("");
+            }
+            data[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+        }
+        return data;
+    }
+
+    window.kiwiConfig = function() {
+        var buffers = {
+          "inline_link_previews":false,
+          "show_timestamps": true,
+          "extra_formatting":false,
+          "scrollback_size": 75,
+          "show_message_info":false,
+          "colour_nicknames_in_messages": true,
+          "coloured_nicklist": true,
+          "messageLayout": "inline",
+
+          "show_joinparts": false,
+          "show_topics": false,
+          "show_nick_changes": false,
+          "show_mode_changes": false,
+          "nicklist_avatars": true,
+          "who_loop": false,
+          "share_typing": false,
+          "traffic_as_activity": true,
+        }
+
+        if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 480 || window.screen.availHeight < 590) {
+          buffers.inline_link_previews = false;
+          buffers.show_timestamps = false;
+          buffers.extra_formatting = false;
+          buffers.scrollback_size =  35;
+          buffers.show_message_info = false;
+          buffers.colour_nicknames_in_messages =  false;
+          buffers.coloured_nicklist = false;
+        }
+
+
+        var themes = [{ "name": "Estandar", "url": "static/themes/chateagratis" }, { "name": "Avanzado", "url": "static/themes/default" }, { "name": "chateagratis", "url": "static/themes/chateagratis" }];
+        var defaultTheme = "Estandar";
+        var serverList = ["platano", "melocoton", "lima"];
+        var server = serverList[Math.floor(Math.random()*serverList.length)];
+        var endpoint = "https://"+server+".chateagratis.net/webirc/kiwiirc/";
+
+        var options = parseParms(window.location.hash.replace("#","")) || {};
+        if(typeof options.channel !== 'undefined') {
+          var channels = options.channel.split(",");
+          channels = channels.map(function(chan) {
+            if(chan.charAt(0) == "#") return chan;
+            else return "#"+chan;
+          });
+
+          options.channel = channels.join(",");
+        }
+
+        if(typeof options.theme_location !== 'undefined') {
+          themes = [{ "name": "Estandar", "url": options.theme_location+"static/themes/chateagratis" }, { "name": "Avanzado", "url": options.theme_location + "static/themes/default" }, { "name": "chateagratis", "url": options.theme_location +"static/themes/chateagratis" }];
+        }
+
+        if(typeof options.theme !== 'undefined') {
+          themes.push({"name": "custom_theme", "url": options.theme});
+          defaultTheme = "custom_theme";
+        }
+
+        if(typeof options.ua !== 'undefined') {
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', options.ua, 'auto');
+          ga('send', 'pageview');
+        }
+
+        var gecosArr = ["#","#","#","#"];
+        gecosArr[0] = options.avatar || "#";
+        gecosArr[1] = options.gender || "#";
+        gecosArr[2] = options.age || "#";
+        gecosArr[3] = options.photo || "#";
+        gecosArr[3] = gecosArr[3].replace("https://images.chateagratis.net", "");
+        options.gecos =  btoa(gecosArr.join("|"));
+        options.version = "v28";
+
+        var gecos = options.gecos;
+
+        return {
+            "windowTitle": "Chat " + options.version,
+            "startupScreen": "welcome",
+            "kiwiServer": endpoint,
+            "restricted": true,
+            "theme": defaultTheme,
+            "showEmojiPicker": true,
+            "showColorPicker": true,
+            "themes": themes,
+            "startupOptions" : {
+                "channel": "#amistad",
+                "nick": "chatea??",
+                "greetingText": "Chat Gratis",
+                "autoConnect": true,
+                "gecos": gecos
+            },
+            "plugins": [
+              {"name": "autologin", "url": "static/plugins/autologin.js"},
+              {"name": "autologin", "url": "static/plugins/avatar.html"},
+              {"name": "firebase", "url": "static/plugins/firebase.js"}
+            ],
+            "buffers": buffers,
+            "conference": {
+                "server": "meet.jit.si",
+                "secure": false
+            },
+            "chatea_options": options,
+            "pluginEmojis": {
+            "titleText": "Selecciona Emoji\u2026",
+            "searchText": "Buscar",
+            "categoriesSearchResultsText": "Resultados",
+            "categoriesRecentText": "Recientes",
+            "categoriesPeopleText": "Personas",
+            "categoriesNatureText": "Naturaleza",
+            "categoriesFoodsText": "Alimentos",
+            "categoriesActivityText": "Actividad",
+            "categoriesPlacesText": "Lugares",
+            "categoriesObjectsText": "Objetos",
+            "categoriesSymbolsText": "Símbolos",
+            "categoriesFlagsText": "Banderas",
+            "categoriesCustomText": "Persoanlizados"
+        },
+
+        };
+    };
+</script>
   </head>
   <body>
     <noscript>
@@ -31,5 +170,29 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
-  </body>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-analytics.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyBLnEbY9kfNhV16YaSkjKO7kLs1lE0v910",
+    authDomain: "webchat-304d9.firebaseapp.com",
+    databaseURL: "https://webchat-304d9.firebaseio.com",
+    projectId: "webchat-304d9",
+    storageBucket: "webchat-304d9.appspot.com",
+    messagingSenderId: "523632172571",
+    appId: "1:523632172571:web:1348d0b4aefb7ebc4a62be",
+    measurementId: "G-CJPEXM53CJ"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
+</body>
 </html>

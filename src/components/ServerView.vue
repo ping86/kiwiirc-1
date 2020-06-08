@@ -8,7 +8,6 @@
                 <tabbed-tab
                     v-if="!restrictedServer"
                     :header="$t('settings')"
-                    :focus="!hasMessages"
                     name="settings"
                 >
                     <network-settings :network="network" />
@@ -17,6 +16,7 @@
                     v-if="networkConnected"
                     :header="$t('channels')"
                     name="channels"
+                    :focus="true"
                 >
                     <channel-list :network="network" />
                 </tabbed-tab>

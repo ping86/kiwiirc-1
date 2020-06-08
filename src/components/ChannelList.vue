@@ -138,6 +138,9 @@ export default {
             this.page = 0;
         },
     },
+    created() {
+        this.maybeUpdateList();
+    },
     methods: {
         nextPage() {
             if (this.page < this.maxPages) {

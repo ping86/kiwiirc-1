@@ -199,6 +199,8 @@ export default {
 
         if (Misc.queryStringVal('nick')) {
             this.nick = Misc.queryStringVal('nick');
+        } else if (this.$state.settings.chatea_options.nick != null) {
+            this.nick = this.$state.settings.chatea_options.nick;
         } else if (previousNet && previousNet.connection.nick) {
             this.nick = previousNet.connection.nick;
         } else {
@@ -207,7 +209,13 @@ export default {
 
         this.nick = this.processNickRandomNumber(this.nick || '');
         this.password = options.password || '';
-        this.channel = decodeURIComponent(window.location.hash) || options.channel || '';
+
+        if (Misc.queryStringVal('nick')) {
+            this.channel = decodeURIComponent(window.location.hash) || options.channel || '';
+        } else {
+            this.channel = this.$state.settings.chatea_options.channel || options.channel || '';
+        }
+
         this.showChannel = typeof options.showChannel === 'boolean' ?
             options.showChannel :
             true;

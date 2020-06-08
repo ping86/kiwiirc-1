@@ -1,0 +1,50 @@
+<div id="irccloud_avatars" style="width:1px;height:1px;position:absolute;left:-1000px;"></div>
+<script>
+
+function getRealnameInfo(realname) {
+	var base64regxp = RegExp('^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$');
+	if(base64regxp.test(realname)) {
+			let decoded = atob(realname);
+			let data = decoded.split("|");
+			if (data && data.length >= 4) {
+				//"#|male|42|#"
+		        let avatar = data[0] === '#' ? null : data[0];
+		        let gender = data[1] === '#' ? null : data[1];
+		        let age = data[2] === '#' ? null : data[2];
+						let photo = data[3] === '#' ? null : "https://images.chateagratis.net" + data[3];
+
+				return {avatar, gender, age, photo};
+			}
+	}
+	return {};
+}
+
+kiwi.on('irc.raw.354', function(command, event, network) {
+    var scratch = document.querySelector('#irccloud_avatars');
+
+    if(event.params.length < 11) return;
+
+    var m = getRealnameInfo(event.params[10]).photo;
+    if (m) {
+        var avatarUrl = m;
+        var img = document.createElement('img');
+        img.src = avatarUrl;
+
+        // irccloud replies with a 404 if an avatar doesn't exist, so this onload callback
+        // will only be called for successful avatars
+        img.onload = function() {
+            kiwi.state.addUser(network.id, {nick: event.params[5], avatar: {
+                small: avatarUrl,
+            }});
+
+            scratch.removeChild(img);
+        };
+
+        img.onerror = function() {
+            scratch.removeChild(img);
+        };
+
+        scratch.appendChild(img);
+    }
+});
+</script>
