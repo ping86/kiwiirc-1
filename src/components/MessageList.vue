@@ -386,13 +386,13 @@ export default {
                 this.$el.scrollTop = this.$el.scrollHeight;
                 return;
             }
-            this.$refs.ender.scrollIntoView(false);
+            this.$el.scrollTop = this.$el.scrollHeight;
         },
         maybeScrollToBottom() {
             if (!this.maybeScrollToBottom_throttled) {
                 this.maybeScrollToBottom_throttled = _.throttle(() => {
                     if (this.auto_scroll) {
-                        this.scrollToBottom();
+                        this.$el.scrollTop = this.$el.scrollHeight;
                     }
                 }, 500, { leading: true });
             }
