@@ -1,0 +1,54 @@
+<template id="verify">
+<div style="padding: 10px;">
+  <h1>¡Necesitamos verificar tu conexión!</h1>
+  <p>Por favor, verifica tu conexión ahora. Confirma que eres humano de forma rápida y sencilla. ¡Y chatea gratis como siempre!<p>
+  <form action="" method="POST">
+  <div id="h-captcha" class="h-captcha"></div>
+  <br />
+  <input type="submit" value="Submit" />
+</form>
+</div>
+</template>
+
+<script>
+
+kiwi.plugin('verify', function(kiwi, log) {
+    var verify = {
+        template: '#verify',
+        data: function data() {
+            return {
+            };
+        }
+    };
+
+    kiwi.on('irc.notice', function(event) {
+        //if(event.from_server) {
+          var token = event.message.split(" ");
+
+          if(token[0] == "VERIFICATION_MESS") {
+            var uuid = token[1];
+            kiwi.addView('VerifyComponent', verify);
+            kiwi.showView('VerifyComponent');
+            setTimeout(function() {
+              if(typeof hcaptcha !== 'undefined') {
+                var widgetID = hcaptcha.render('h-captcha', { 'sitekey':'02cdf9ae-2a84-4b59-8a9d-12850ed65855' });
+              } else {
+                var scr = document.createElement('script');
+                scr.src = 'https://hcaptcha.com/1/api.js?onload=hLoadCaptcha&render=explicit&hl=es';
+                scr.defer = true;
+                document.head.appendChild(scr);
+              }
+            }, 500);
+          }
+        //}
+
+        window.hLoadCaptcha = function () {
+          var widgetID = hcaptcha.render('h-captcha', { 'sitekey':'02cdf9ae-2a84-4b59-8a9d-12850ed65855' });
+        }
+
+
+
+    });
+
+});
+</script>

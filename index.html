@@ -54,7 +54,7 @@
           "nicklist_avatars": true,
           "who_loop": false,
           "share_typing": false,
-          "traffic_as_activity": true,
+          "traffic_as_activity": false,
         }
 
         if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 480 || window.screen.availHeight < 590) {
@@ -137,6 +137,7 @@
             "plugins": [
               {"name": "autologin", "url": "static/plugins/autologin.js"},
               {"name": "autologin", "url": "static/plugins/avatar.html"},
+              {"name": "verify", "url": "static/plugins/verify.html"},
               {"name": "firebase", "url": "static/plugins/firebase.js"}
             ],
             "buffers": buffers,

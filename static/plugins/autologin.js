@@ -8,6 +8,6 @@ kiwi.on('irc.raw.001', function(event) {
            }, 1000);
        }
        setTimeout(function() {
-           kiwi.state.getActiveNetwork().name = "Lisatdo de Salas";
+           kiwi.state.getActiveNetwork().name = "Listado de Salas";
        }, 1000);
 });
